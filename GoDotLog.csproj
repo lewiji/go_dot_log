@@ -1,0 +1,35 @@
+<Project Sdk="Godot.NET.Sdk/3.3.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- Turn this on to see what public api's are missing docs -->
+    <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
+
+
+    <Title>GoDotLog</Title>
+    <Description>Opinionated Godot logging interface and console implementation.
+    </Description>
+    <Copyright>© 2022 Chickensoft Games</Copyright>
+    <Company>Chickensoft</Company>
+
+    <PackageId>Chickensoft.GoDotLog</PackageId>
+    <PackageVersion>0.0.1</PackageVersion>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageIcon></PackageIcon>
+    <PackageTags>Godot;Log;Logging;Chickensoft;Gamedev;Utility;Utilities</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>git@github.com:chickensoft-games/go_dot_log.git</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chickensoft-games/go_dot_log</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
