@@ -14,13 +14,6 @@ namespace GoDotLog {
     private string _prefix { get; set; }
 
     /// <summary>
-    /// Parameterless constructor, don't use this. Required for all
-    /// Godot.Objects:
-    /// https://github.com/godotengine/godot/issues/37703#issuecomment-877406433
-    /// </summary>
-    public GDLog() => _prefix = "";
-
-    /// <summary>
     /// Creates a new GDLog with the given prefix.
     /// </summary>
     /// <param name="prefix">Log prefix, displayed at the start of each message.
