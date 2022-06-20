@@ -6,11 +6,31 @@ namespace GoDotLog {
 
   /// <summary>
   /// Default log which outputs to Godot using GD.Print, GD.PushWarning,
-  /// and GD.Error. Warnings and errors also print the message since
+  /// and GD.PushError. Warnings and errors also print the message since
   /// `GD.PushWarning` and `GD.PushError` don't always show up in the output
   /// when debugging.
   /// </summary>
   public class GDLog : ILog {
+    /// <summary>Default print action (GD.Print).</summary>
+    public static readonly Action<string> DefaultPrint
+      = (message) => GD.Print(message);
+
+    /// <summary>Print action (defaults to GD.Print).</summary>
+    public static Action<string> PrintAction = DefaultPrint;
+
+    /// <summary>Default push warning action (GD.PushWarning).</summary>
+    public static readonly Action<string> DefaultPushWarning
+      = (message) => GD.PushWarning(message);
+
+    /// <summary>Push warning action (defaults to GD.PushWarning).</summary>
+    public static Action<string> PushWarningAction = DefaultPushWarning;
+
+    /// <summary>Default push error action (GD.PushError).</summary>
+    public static readonly Action<string> DefaultPushError
+      = (message) => GD.PushError(message);
+    /// <summary>Push error action (defaults to GD.PushError).</summary>
+    public static Action<string> PushErrorAction = DefaultPushError;
+
     private string _prefix { get; set; }
 
     /// <summary>
@@ -22,7 +42,7 @@ namespace GoDotLog {
 
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Print(string message) => GD.Print(_prefix + ": " + message);
+    public void Print(string message) => PrintAction(_prefix + ": " + message);
 
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -30,10 +50,14 @@ namespace GoDotLog {
       foreach (var frame in stackTrace.GetFrames()) {
         var fileName = frame.GetFileName() ?? "**";
         var lineNumber = frame.GetFileLineNumber();
+        var colNumber = frame.GetFileColumnNumber();
         var method = frame.GetMethod();
         var className = method.DeclaringType?.Name ?? "UnknownClass";
         var methodName = method.Name;
-        Print($"{className}.{methodName} ({fileName}:{lineNumber})");
+        Print(
+          $"{className}.{methodName} in " +
+          $"{fileName}({lineNumber},{colNumber})"
+        );
       }
     }
 
@@ -47,15 +71,15 @@ namespace GoDotLog {
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Warn(string message) {
-      GD.Print(_prefix + ": " + message);
-      GD.PushWarning(_prefix + ": " + message);
+      PrintAction(_prefix + ": " + message);
+      PushWarningAction(_prefix + ": " + message);
     }
 
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Error(string message) {
-      GD.Print(_prefix + ": " + message);
-      GD.PushError(_prefix + ": " + message);
+      PrintAction(_prefix + ": " + message);
+      PushErrorAction(_prefix + ": " + message);
     }
 
     /// <inheritdoc/>
@@ -74,8 +98,8 @@ namespace GoDotLog {
         return call();
       }
       catch (Exception e) {
-        onError?.Invoke(e);
         Print(e);
+        onError?.Invoke(e);
         throw;
       }
     }
