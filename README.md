@@ -1,6 +1,6 @@
 # GoDotLog
 
-[![Discord](https://img.shields.io/badge/Chickensoft%20Discord-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/gSjaPgMmYW) ![line coverage][line-coverage] ![branch coverage][branch-coverage]
+[![Chickensoft Badge][chickensoft-badge]][chickensoft-website] [![Discord](https://img.shields.io/badge/Chickensoft%20Discord-%237289DA.svg?style=flat&logo=discord&logoColor=white)][discord] ![line coverage][line-coverage] ![branch coverage][branch-coverage]
 
 Opinionated Godot logging interface and console implementation.
 
@@ -45,5 +45,8 @@ _log.Print(new StackTrace());
 
 <!-- Links -->
 
+[chickensoft-badge]: https://chickensoft.games/images/chickensoft/chickensoft_badge.svg
+[chickensoft-website]: https://chickensoft.games
+[discord]: https://discord.gg/gSjaPgMmYW
 [line-coverage]: https://raw.githubusercontent.com/chickensoft-games/go_dot_log/main/test/reports/line_coverage.svg
 [branch-coverage]: https://raw.githubusercontent.com/chickensoft-games/go_dot_log/main/test/reports/branch_coverage.svg
