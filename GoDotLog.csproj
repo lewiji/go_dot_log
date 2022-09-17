@@ -1,6 +1,7 @@
 <Project Sdk="Godot.NET.Sdk/4.0.0-beta1">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -14,7 +15,7 @@
     <Company>Chickensoft</Company>
 
     <PackageId>Chickensoft.GoDotLog</PackageId>
-    <PackageVersion>1.0.1-beta1</PackageVersion>
+    <PackageVersion>1.0.2-beta1</PackageVersion>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
     <PackageTags>Godot;Log;Logging;Chickensoft;Gamedev;Utility;Utilities</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
