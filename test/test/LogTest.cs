@@ -1,3 +1,4 @@
+namespace GoDotLogTest;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -66,12 +67,12 @@ public class LogTest : TestClass {
 
   [Test]
   public void PrintsException() {
-    var e = new Exception("message");
+    var e = new InvalidOperationException("message");
     var log = new GDLog("Prefix");
     log.Print(e);
     var output = string.Join("\n", new string[] {
       "Prefix: An error ocurred.",
-      "Prefix: System.Exception: message\n"
+      "Prefix: System.InvalidOperationException: message\n"
     });
     _print.ToString().ShouldBe(output);
     _error.ToString().ShouldBe(output);
@@ -88,7 +89,7 @@ public class LogTest : TestClass {
   [Test]
   public void Errors() {
     var log = new GDLog("Prefix");
-    log.Error("Hello, world!");
+    log.Err("Hello, world!");
     _print.ToString().ShouldBe("Prefix: Hello, world!\n");
     _error.ToString().ShouldBe("Prefix: Hello, world!\n");
   }
@@ -127,7 +128,7 @@ public class LogTest : TestClass {
   public void RunsError() {
     var log = new GDLog("Prefix");
     var called = false;
-    var exception = new Exception("error message");
+    var exception = new InvalidOperationException("error message");
     var e = Should.Throw<Exception>(
       () => log.Run(
         () => throw exception,
@@ -150,7 +151,7 @@ public class LogTest : TestClass {
   public void RunThrowsOnReturn() {
     var log = new GDLog("Prefix");
     var called = false;
-    var exception = new Exception("error message");
+    var exception = new InvalidOperationException("error message");
     var e = Should.Throw<Exception>(
       () => log.Run<string>(
         () => throw exception,
@@ -173,7 +174,7 @@ public class LogTest : TestClass {
   public void AlwaysReturnsFallback() {
     var log = new GDLog("Prefix");
     var result = log.Always(
-      () => throw new Exception("error message"), "fallback"
+      () => throw new InvalidOperationException("error message"), "fallback"
     );
     _warn.ToString().ShouldNotBeEmpty();
   }
@@ -188,7 +189,7 @@ public class LogTest : TestClass {
 #pragma warning restore CS0436
 
 internal class FakeMethodBase : MethodBase {
-  private readonly bool _valid = false;
+  private readonly bool _valid;
   private readonly string? _methodName;
 
   public FakeMethodBase(bool valid, string? methodName) {
@@ -197,7 +198,7 @@ internal class FakeMethodBase : MethodBase {
   }
 
   public override Type DeclaringType => _valid ? new FakeType() : null!;
-  public override string Name => _methodName;
+  public override string Name => _methodName ?? null!;
 
   public override MethodAttributes Attributes
     => throw new NotImplementedException();
@@ -215,19 +216,19 @@ internal class FakeMethodBase : MethodBase {
     => throw new NotImplementedException();
   public override ParameterInfo[] GetParameters()
     => throw new NotImplementedException();
-  public override object Invoke(
-    object obj,
+  public override object? Invoke(
+    object? obj,
     BindingFlags invokeAttr,
-    Binder binder,
-    object[] parameters,
-    CultureInfo culture
+    Binder? binder,
+    object?[]? parameters,
+    CultureInfo? culture
   ) => throw new NotImplementedException();
   public override bool IsDefined(Type attributeType, bool inherit)
     => throw new NotImplementedException();
 }
 
 internal class FakeStackFrame : StackFrame {
-  private readonly bool _valid = false;
+  private readonly bool _valid;
   private readonly string? _methodName;
 
   public FakeStackFrame(bool valid, string? methodName) {
@@ -238,11 +239,12 @@ internal class FakeStackFrame : StackFrame {
   public override string GetFileName() => _valid ? "File.cs" : null!;
   public override int GetFileLineNumber() => 1;
   public override int GetFileColumnNumber() => 2;
-  public override MethodBase GetMethod() => new FakeMethodBase(_valid, _methodName);
+  public override MethodBase GetMethod()
+    => new FakeMethodBase(_valid, _methodName);
 }
 
 internal class FakeStackTrace : StackTrace {
-  private readonly bool _valid = false;
+  private readonly bool _valid;
   private readonly string? _methodName;
 
   public FakeStackTrace(bool valid, string? methodName) {
@@ -299,42 +301,51 @@ internal class FakeType : Type {
     => throw new NotImplementedException();
   public override PropertyInfo[] GetProperties(BindingFlags bindingAttr)
     => throw new NotImplementedException();
-  public override object InvokeMember(
+  public override object? InvokeMember(
     string name,
     BindingFlags invokeAttr,
-    Binder binder,
-    object target,
-    object[] args,
-    ParameterModifier[] modifiers,
-    CultureInfo culture,
-    string[] namedParameters
+    Binder? binder,
+    object? target,
+    object?[]? args,
+    ParameterModifier[]? modifiers,
+    CultureInfo? culture,
+    string[]? namedParameters
   ) => throw new NotImplementedException();
   public override bool IsDefined(Type attributeType, bool inherit)
     => throw new NotImplementedException();
   protected override TypeAttributes GetAttributeFlagsImpl()
     => throw new NotImplementedException();
-  protected override ConstructorInfo GetConstructorImpl(
+  protected override ConstructorInfo? GetConstructorImpl(
     BindingFlags bindingAttr,
-    Binder binder,
+    Binder? binder,
     CallingConventions callConvention,
     Type[] types,
-    ParameterModifier[] modifiers
+    ParameterModifier[]? modifiers
   ) => throw new NotImplementedException();
-  protected override MethodInfo GetMethodImpl(
+  protected override MethodInfo? GetMethodImpl(
     string name,
+    int genericParameterCount,
     BindingFlags bindingAttr,
-    Binder binder,
+    Binder? binder,
     CallingConventions callConvention,
-    Type[] types,
-    ParameterModifier[] modifiers
+    Type[]? types,
+    ParameterModifier[]? modifiers
   ) => throw new NotImplementedException();
-  protected override PropertyInfo GetPropertyImpl(
+  protected override MethodInfo? GetMethodImpl(
     string name,
     BindingFlags bindingAttr,
-    Binder binder,
-    Type returnType,
-    Type[] types,
-    ParameterModifier[] modifiers
+    Binder? binder,
+    CallingConventions callConvention,
+    Type[]? types,
+    ParameterModifier[]? modifiers
+  ) => throw new NotImplementedException();
+  protected override PropertyInfo? GetPropertyImpl(
+    string name,
+    BindingFlags bindingAttr,
+    Binder? binder,
+    Type? returnType,
+    Type[]? types,
+    ParameterModifier[]? modifiers
   ) => throw new NotImplementedException();
   protected override bool HasElementTypeImpl()
     => throw new NotImplementedException();
