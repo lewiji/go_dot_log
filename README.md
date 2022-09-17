@@ -18,7 +18,7 @@ _log.Print("My message");
 
 _log.Warn("My message");
 
-_log.Error("My message");
+_log.Err("My message");
 
 // Run a potentially unsafe action. Any errors thrown from the action will
 // be output by the log. An optional error handler callback can be provided
@@ -26,7 +26,7 @@ _log.Error("My message");
 _log.Run(
   () => { _log.Print("Potentially unsafe action"); },
   (e) => {
-    _log.Error("Better clean up after myself...whatever I did failed.");
+    _log.Err("Better clean up after myself...whatever I did failed.");
   }
 );
 
