@@ -10,7 +10,7 @@ namespace GoDotLog {
   /// `GD.PushWarning` and `GD.PushError` don't always show up in the output
   /// when debugging.
   /// </summary>
-  public class GDLog : ILog {
+  public partial class GDLog : ILog {
     /// <summary>Default print action (GD.Print).</summary>
     public static readonly Action<string> DefaultPrint
       = (message) => GD.Print(message);

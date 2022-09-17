@@ -5,7 +5,7 @@ namespace GoDotLog {
 
 
   /// <summary>Exception thrown when an assertion fails.</summary>
-  public class AssertionException : Exception {
+  public partial class AssertionException : Exception {
     /// <summary>
     /// Creates a new assertion exception.
     /// </summary>
