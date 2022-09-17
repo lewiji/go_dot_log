@@ -48,7 +48,7 @@ public class LogTest : TestClass {
   public void PrintsStackTrace() {
     var log = new GDLog("Prefix");
     var st = new Mock<StackTrace>();
-    log.Print(new FakeStackTrace(true));
+    log.Print(new FakeStackTrace(true, "MethodName"));
     _print.ToString().ShouldBe(
       "Prefix: ClassName.MethodName in File.cs(1,2)\n"
     );
@@ -58,9 +58,9 @@ public class LogTest : TestClass {
   public void PrintsStackTraceWithDefaults() {
     var log = new GDLog("Prefix");
     var st = new Mock<StackTrace>();
-    log.Print(new FakeStackTrace(false));
+    log.Print(new FakeStackTrace(false, null));
     _print.ToString().ShouldBe(
-      "Prefix: UnknownClass.MethodName in **(1,2)\n"
+      "Prefix: UnknownClass.UnknownMethod in **(1,2)\n"
     );
   }
 
@@ -189,10 +189,15 @@ public class LogTest : TestClass {
 
 internal class FakeMethodBase : MethodBase {
   private readonly bool _valid = false;
-  public FakeMethodBase(bool valid) => _valid = valid;
+  private readonly string? _methodName;
+
+  public FakeMethodBase(bool valid, string? methodName) {
+    _valid = valid;
+    _methodName = methodName;
+  }
 
   public override Type DeclaringType => _valid ? new FakeType() : null!;
-  public override string Name => "MethodName";
+  public override string Name => _methodName;
 
   public override MethodAttributes Attributes
     => throw new NotImplementedException();
@@ -223,23 +228,33 @@ internal class FakeMethodBase : MethodBase {
 
 internal class FakeStackFrame : StackFrame {
   private readonly bool _valid = false;
-  public FakeStackFrame(bool valid) => _valid = valid;
+  private readonly string? _methodName;
+
+  public FakeStackFrame(bool valid, string? methodName) {
+    _valid = valid;
+    _methodName = methodName;
+  }
 
   public override string GetFileName() => _valid ? "File.cs" : null!;
   public override int GetFileLineNumber() => 1;
   public override int GetFileColumnNumber() => 2;
-  public override MethodBase GetMethod() => new FakeMethodBase(_valid);
+  public override MethodBase GetMethod() => new FakeMethodBase(_valid, _methodName);
 }
 
 internal class FakeStackTrace : StackTrace {
   private readonly bool _valid = false;
-  public FakeStackTrace(bool valid) => _valid = valid;
+  private readonly string? _methodName;
+
+  public FakeStackTrace(bool valid, string? methodName) {
+    _valid = valid;
+    _methodName = methodName;
+  }
 
   public override StackFrame GetFrame(int index)
-    => new FakeStackFrame(_valid);
+    => new FakeStackFrame(_valid, _methodName);
 
   public override StackFrame[] GetFrames() => new StackFrame[] {
-    new FakeStackFrame(_valid),
+    new FakeStackFrame(_valid, _methodName),
   };
 }
 
