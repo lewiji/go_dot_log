@@ -3,7 +3,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
-    <PlatformTarget>x64</PlatformTarget>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -15,7 +14,7 @@
     <Company>Chickensoft</Company>
 
     <PackageId>Chickensoft.GoDotLog</PackageId>
-    <PackageVersion>1.0.0-beta1</PackageVersion>
+    <PackageVersion>1.0.1-beta1</PackageVersion>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
     <PackageTags>Godot;Log;Logging;Chickensoft;Gamedev;Utility;Utilities</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
