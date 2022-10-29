@@ -7,7 +7,7 @@ using System.Text;
 using Godot;
 using GoDotLog;
 using GoDotTest;
-using Moq;
+using LightMock.Generator;
 using Shouldly;
 
 // Since log is used by GoDotTest, it creates a circular dependency warning
