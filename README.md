@@ -43,6 +43,10 @@ var result = _log.Always<T>(
 _log.Print(new StackTrace());
 ```
 
+## Contributing
+
+For information on contributing, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 <!-- Links -->
 
 [chickensoft-badge]: https://chickensoft.games/images/chickensoft/chickensoft_badge.svg
