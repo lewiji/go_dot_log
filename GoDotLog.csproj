@@ -15,7 +15,7 @@
     <Company>Chickensoft</Company>
 
     <PackageId>Chickensoft.GoDotLog</PackageId>
-    <PackageVersion>1.0.2-beta3</PackageVersion>
+    <PackageVersion>1.0.2-beta6</PackageVersion>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
     <PackageTags>Godot;Log;Logging;Chickensoft;Gamedev;Utility;Utilities</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
