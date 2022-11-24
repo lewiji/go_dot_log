@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.0.0-beta.3">
+<Project Sdk="Godot.NET.Sdk/4.0.0-beta.6">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Chickensoft.GoDotTest" Version="1.0.0" />
     <PackageReference Include="Shouldly" Version="4.0.3" />
     <PackageReference Include="LightMock.Generator" Version="1.1.2" />
     <PackageReference Include="LightMoq" Version="0.1.0" />
+    <ProjectReference Include="../../go_dot_test/GoDotTest.csproj" />
 
     <!-- Include GoDotTest files directly for the sake of coverage -->
     <!-- https://stackoverflow.com/a/35477501 -->
