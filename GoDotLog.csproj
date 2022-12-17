@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.0.0-beta.6">
+<Project Sdk="Godot.NET.Sdk/4.0.0-beta.8">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
@@ -9,13 +9,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <Title>GoDotLog</Title>
-    <Description>Opinionated Godot logging interface and console implementation.
-    </Description>
+    <Description>Opinionated Godot logging interface and console implementation.</Description>
     <Copyright>© 2022 Chickensoft Games</Copyright>
     <Company>Chickensoft</Company>
 
     <PackageId>Chickensoft.GoDotLog</PackageId>
-    <PackageVersion>1.0.2-beta6</PackageVersion>
+    <PackageVersion>1.0.2-beta8</PackageVersion>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
     <PackageTags>Godot;Log;Logging;Chickensoft;Gamedev;Utility;Utilities</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -27,6 +26,10 @@
 
     <!-- Don't include the test project -->
     <DefaultItemExcludes>$(DefaultItemExcludes);test/**/*</DefaultItemExcludes>
+
+    <!-- To show generated files -->
+    <!-- <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>.generated</CompilerGeneratedFilesOutputPath> -->
   </PropertyGroup>
 
   <ItemGroup>

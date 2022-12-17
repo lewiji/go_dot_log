@@ -1,7 +1,19 @@
 {
   "words": [
+    "assemblyfilters",
+    "branchcoverage",
+    "classfilters",
+    "CYGWIN",
     "inheritdoc",
+    "linecoverage",
+    "missingall",
+    "MSYS",
+    "opencover",
+    "reportgenerator",
+    "reporttypes",
     "Shouldly",
+    "targetargs",
+    "targetdir",
     "typeparam"
   ]
 }

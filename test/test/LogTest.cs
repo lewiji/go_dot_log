@@ -21,7 +21,6 @@ public class LogTest : TestClass {
 
   public LogTest(Node testScene) : base(testScene) { }
 
-  [Setup]
   public void Setup() {
     _print = new StringBuilder();
     _warn = new StringBuilder();
@@ -38,35 +37,72 @@ public class LogTest : TestClass {
     log.ShouldBeAssignableTo<ILog>();
   }
 
+  // Note: Setup() and Cleanup() have to be called inside each test instead of
+  // using [SetupAll] and [CleanupAll] from GoDotTest since we are overriding
+  // GDLog's static methods and GoDotTest has a project reference to us.
+  // These packages are very intertwined, making it difficult to test them.
+
   [Test]
   public void Prints() {
+    Setup();
     var log = new GDLog("Prefix");
     log.Print("Hello, world!");
     _print.ToString().ShouldBe("Prefix: Hello, world!\n");
+    Cleanup();
   }
 
   [Test]
   public void PrintsStackTrace() {
+    Setup();
     var log = new GDLog("Prefix");
     var st = new Mock<StackTrace>();
-    log.Print(new FakeStackTrace(true, "MethodName"));
+    log.Print(new FakeStackTrace("File.cs", "ClassName", "MethodName"));
     _print.ToString().ShouldBe(
       "Prefix: ClassName.MethodName in File.cs(1,2)\n"
     );
+    Cleanup();
   }
 
   [Test]
-  public void PrintsStackTraceWithDefaults() {
+  public void PrintsStackTraceWithoutFile() {
+    Setup();
     var log = new GDLog("Prefix");
     var st = new Mock<StackTrace>();
-    log.Print(new FakeStackTrace(false, null));
+    log.Print(new FakeStackTrace(null, "ClassName", "MethodName"));
     _print.ToString().ShouldBe(
-      "Prefix: UnknownClass.UnknownMethod in **(1,2)\n"
+      "Prefix: ClassName.MethodName in **(1,2)\n"
     );
+    Cleanup();
+  }
+
+  [Test]
+  public void PrintsStackTraceWithoutClass() {
+    Setup();
+    var log = new GDLog("Prefix");
+    var st = new Mock<StackTrace>();
+    log.Print(new FakeStackTrace("File.cs", null, "MethodName"));
+    _print.ToString().ShouldBe(
+      "Prefix: UnknownClass.MethodName in File.cs(1,2)\n"
+    );
+    Cleanup();
+  }
+
+  [Test]
+  public void PrintsStackTraceWithoutMethod() {
+    Setup();
+    var log = new GDLog("Prefix");
+    var st = new Mock<StackTrace>();
+    log.Print(new FakeStackTrace("File.cs", "ClassName", null));
+    // No method also results in an unknown class.
+    _print.ToString().ShouldBe(
+      "Prefix: UnknownClass.UnknownMethod in File.cs(1,2)\n"
+    );
+    Cleanup();
   }
 
   [Test]
   public void PrintsException() {
+    Setup();
     var e = new InvalidOperationException("message");
     var log = new GDLog("Prefix");
     log.Print(e);
@@ -76,35 +112,43 @@ public class LogTest : TestClass {
     });
     _print.ToString().ShouldBe(output);
     _error.ToString().ShouldBe(output);
+    Cleanup();
   }
 
   [Test]
   public void Warns() {
+    Setup();
     var log = new GDLog("Prefix");
     log.Warn("Hello, world!");
     _print.ToString().ShouldBe("Prefix: Hello, world!\n");
     _warn.ToString().ShouldBe("Prefix: Hello, world!\n");
+    Cleanup();
   }
 
   [Test]
   public void Errors() {
+    Setup();
     var log = new GDLog("Prefix");
     log.Err("Hello, world!");
     _print.ToString().ShouldBe("Prefix: Hello, world!\n");
     _error.ToString().ShouldBe("Prefix: Hello, world!\n");
+    Cleanup();
   }
 
   [Test]
   public void AssertsSuccessfully() {
+    Setup();
     var log = new GDLog("Prefix");
     log.Assert(true, "message");
     _print.ToString().ShouldBeEmpty();
     _warn.ToString().ShouldBeEmpty();
     _error.ToString().ShouldBeEmpty();
+    Cleanup();
   }
 
   [Test]
   public void AssertsError() {
+    Setup();
     var log = new GDLog("Prefix");
     var e = Should.Throw<AssertionException>(
       () => log.Assert(false, "error message")
@@ -113,19 +157,23 @@ public class LogTest : TestClass {
     var output = "Prefix: error message\n";
     _print.ToString().ShouldBe(output);
     _error.ToString().ShouldBe(output);
+    Cleanup();
   }
 
   [Test]
   public void RunsSuccessfully() {
+    Setup();
     var log = new GDLog("Prefix");
     log.Run(() => { });
     _print.ToString().ShouldBeEmpty();
     _warn.ToString().ShouldBeEmpty();
     _error.ToString().ShouldBeEmpty();
+    Cleanup();
   }
 
   [Test]
   public void RunsError() {
+    Setup();
     var log = new GDLog("Prefix");
     var called = false;
     var exception = new InvalidOperationException("error message");
@@ -138,17 +186,21 @@ public class LogTest : TestClass {
     _print.ToString().ShouldNotBeEmpty();
     called.ShouldBeTrue();
     e.Message.ShouldContain("error message");
+    Cleanup();
   }
 
   [Test]
   public void RunReturnsSuccessfully() {
+    Setup();
     var log = new GDLog("Prefix");
     var result = log.Run(() => "value");
     result.ShouldBe("value");
+    Cleanup();
   }
 
   [Test]
   public void RunThrowsOnReturn() {
+    Setup();
     var log = new GDLog("Prefix");
     var called = false;
     var exception = new InvalidOperationException("error message");
@@ -161,26 +213,30 @@ public class LogTest : TestClass {
     called.ShouldBe(true);
     _print.ToString().ShouldNotBeEmpty();
     e.Message.ShouldContain("error message");
+    Cleanup();
   }
 
   [Test]
   public void AlwaysReturns() {
+    Setup();
     var log = new GDLog("Prefix");
     var result = log.Always(() => "value", "fallback");
     result.ShouldBe("value");
+    Cleanup();
   }
 
   [Test]
   public void AlwaysReturnsFallback() {
+    Setup();
     var log = new GDLog("Prefix");
     var result = log.Always(
       () => throw new InvalidOperationException("error message"), "fallback"
     );
     _warn.ToString().ShouldNotBeEmpty();
+    Cleanup();
   }
 
-  [CleanupAll]
-  public void CleanupAll() {
+  public void Cleanup() {
     GDLog.PrintAction = GDLog.DefaultPrint;
     GDLog.PushWarningAction = GDLog.DefaultPushWarning;
     GDLog.PushErrorAction = GDLog.DefaultPushError;
@@ -189,15 +245,20 @@ public class LogTest : TestClass {
 #pragma warning restore CS0436
 
 internal class FakeMethodBase : MethodBase {
-  private readonly bool _valid;
+  private readonly string? _fileName;
   private readonly string? _methodName;
+  private readonly string? _className;
 
-  public FakeMethodBase(bool valid, string? methodName) {
-    _valid = valid;
+  public FakeMethodBase(
+    string? fileName, string? className, string? methodName
+  ) {
+    _fileName = fileName;
     _methodName = methodName;
+    _className = className;
   }
 
-  public override Type DeclaringType => _valid ? new FakeType() : null!;
+  public override Type? DeclaringType
+    => _className != null ? new FakeType(_className) : null;
   public override string Name => _methodName ?? null!;
 
   public override MethodAttributes Attributes
@@ -228,40 +289,56 @@ internal class FakeMethodBase : MethodBase {
 }
 
 internal class FakeStackFrame : StackFrame {
-  private readonly bool _valid;
+  private readonly string? _fileName;
+  private readonly string? _className;
   private readonly string? _methodName;
 
-  public FakeStackFrame(bool valid, string? methodName) {
-    _valid = valid;
+  public FakeStackFrame(
+    string? fileName, string? className, string? methodName
+  ) {
+    _fileName = fileName;
     _methodName = methodName;
+    _className = className;
   }
 
-  public override string GetFileName() => _valid ? "File.cs" : null!;
+  public override string? GetFileName() => _fileName;
   public override int GetFileLineNumber() => 1;
   public override int GetFileColumnNumber() => 2;
-  public override MethodBase GetMethod()
-    => new FakeMethodBase(_valid, _methodName);
+  public override MethodBase? GetMethod()
+    => (_methodName != null)
+      ? new FakeMethodBase(_fileName, _className, _methodName)
+      : null;
 }
 
 internal class FakeStackTrace : StackTrace {
-  private readonly bool _valid;
+  private readonly string? _fileName;
+  private readonly string? _className;
   private readonly string? _methodName;
 
-  public FakeStackTrace(bool valid, string? methodName) {
-    _valid = valid;
+  public FakeStackTrace(
+    string? fileName, string? className, string? methodName
+  ) {
+    _fileName = fileName;
+    _className = className;
     _methodName = methodName;
   }
 
   public override StackFrame GetFrame(int index)
-    => new FakeStackFrame(_valid, _methodName);
+    => new FakeStackFrame(_fileName, _className, _methodName);
 
   public override StackFrame[] GetFrames() => new StackFrame[] {
-    new FakeStackFrame(_valid, _methodName),
+    new FakeStackFrame(_fileName, _className, _methodName),
   };
 }
 
 internal class FakeType : Type {
-  public override string Name => "ClassName";
+  private readonly string? _className;
+
+  public FakeType(string? className) => _className = className;
+
+#pragma warning disable CS8764
+  public override string? Name => _className ?? null!;
+#pragma warning restore CS8764
 
   public override Assembly Assembly => throw new NotImplementedException();
   public override string AssemblyQualifiedName
